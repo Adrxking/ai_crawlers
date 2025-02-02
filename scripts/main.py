@@ -27,7 +27,8 @@ load_dotenv()
 URL_TO_SCRAPE = "https://web.lmarena.ai/leaderboard"
 INSTRUCTION_TO_LLM = (
     "Extrae todas las filas de la tabla principal como objetos con: "
-    "'Rank', 'Model', 'arena score', '95% CI', 'votes', 'organization', 'License'"
+    "'Rank', 'Model', 'arena score', '95% CI', 'votes', 'organization', 'License'."
+    "Ten en cuenta que el Model tiene que ser el nombre del modelo AI, por ejemplo: 'Claude 3.5 Sonnet (20241022)'."
 )
 OUTPUT_FILE = "leaderboard_data.json"
 AI_MODEL="openai/gpt-4o-mini" # Cambiar a "deepseek/deepseek-chat" para Deepseek
