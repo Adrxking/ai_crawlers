@@ -27,8 +27,11 @@ load_dotenv()
 URL_TO_SCRAPE = "https://web.lmarena.ai/leaderboard"
 INSTRUCTION_TO_LLM = (
     "Extrae todas las filas de la tabla principal como objetos con: "
-    "'Rank', 'Model', 'arena score', '95% CI', 'votes', 'organization', 'License'."
-    "Ten en cuenta que el Model tiene que ser el nombre del modelo AI, por ejemplo: 'Claude 3.5 Sonnet (20241022)'."
+    "'Rank', 'Model', 'arena score', '95% CI', 'votes', 'organization', 'License'. "
+    "IMPORTANTE: El campo 'Model' DEBE ser el nombre completo del modelo AI que aparece en la columna 'Model' "
+    "(generalmente en negrita o como texto principal), NO la organización. "
+    "Ejemplo correcto: 'Claude 3.5 Sonnet (20241022)' - "
+    "Ejemplo incorrecto: 'Anthropic'"
 )
 OUTPUT_FILE = "leaderboard_data.json"
 AI_MODEL="openai/gpt-4o-mini" # Cambiar a "deepseek/deepseek-chat" para Deepseek
@@ -37,12 +40,16 @@ API_KEY=os.getenv("OPENAI_API_KEY") # Cambiar a "DEEPSEEK_API_KEY" para Deepseek
 # Modelo Pydantic para validar la estructura de los datos extraídos
 class LeaderboardEntry(BaseModel):
     """Modelo Pydantic para validar la estructura de los datos extraídos."""
-    rank: int = Field(..., description="Posición en el ranking")
-    model: str = Field(..., description="Nombre del modelo AI (Ej: Claude 3.5 Sonnet (20241022))")
-    arena_score: float = Field(..., alias="arena score", description="Puntuación principal")
-    ci_95: str = Field(..., alias="95% CI", description="Intervalo de confianza del 95%")
-    votes: int = Field(..., description="Número de votos recibidos")
-    organization: str = Field(..., description="Empresa o organización responsable")
+    rank: int = Field(..., description="Posición numérica en el ranking")
+    model: str = Field(
+        ..., 
+        description="Nombre completo del modelo AI exactamente como aparece en la columna Model. Ej: 'Claude 3.5 Sonnet (20241022)'",
+        examples=["DeepSeek-R1", "Gemini-2.0-Flash-Thinking-01-21"]
+    )
+    arena_score: float = Field(..., alias="arena score", description="Puntuación principal con decimales")
+    ci_95: str = Field(..., alias="95% CI", description="Intervalo de confianza en formato '+X.XX / -Y.YY'")
+    votes: int = Field(..., description="Número total de votos como entero")
+    organization: str = Field(..., description="Empresa/organización dueña del modelo")
     license: str = Field(..., description="Tipo de licencia del modelo")
 
 async def main():
