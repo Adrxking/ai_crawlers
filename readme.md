@@ -1,4 +1,4 @@
-# OSINT
+# WEB SCRAPING
 
 crawl4ai is an asynchronous web crawling and data extraction tool that leverages advanced AI strategies for processing online content. It provides two scraping approaches: one using the DeepSeek AI provider and another using ChatGPT (gpt-4o-mini). Both methods extract structured data from targeted web pages following a common schema.
 
