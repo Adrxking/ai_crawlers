@@ -28,13 +28,10 @@ URL_TO_SCRAPE = "https://web.lmarena.ai/leaderboard"
 INSTRUCTION_TO_LLM = (
     "Extrae todas las filas de la tabla principal como objetos con: "
     "'Rank', 'Model', 'arena score', '95% CI', 'votes', 'organization', 'License'. "
-    "IMPORTANTE: El campo 'Model' DEBE ser el nombre completo del modelo AI que aparece en la columna 'Model' "
-    "(generalmente en negrita o como texto principal), NO la organización. "
-    "Ejemplo correcto: 'Claude 3.5 Sonnet (20241022)' - "
-    "Ejemplo incorrecto: 'Anthropic'"
+    "IMPORTANTE: El campo 'Model' tiene un svg y un link, debes extraer el texto del link (etiqueta <a>), Una misma organización puede tener varios modelos, por lo que el nombre del modelo es único"
 )
 OUTPUT_FILE = "leaderboard_data.json"
-AI_MODEL="openai/gpt-4o-mini" # Cambiar a "deepseek/deepseek-chat" para Deepseek
+AI_MODEL="openai/gpt-4o-mini" # "deepseek/deepseek-chat", "openai/gpt-4o-mini", "openai/gpt-4o", "ollama/llama3"
 API_KEY=os.getenv("OPENAI_API_KEY") # Cambiar a "DEEPSEEK_API_KEY" para Deepseek
 
 # Modelo Pydantic para validar la estructura de los datos extraídos
@@ -72,7 +69,7 @@ async def main():
         input_format="markdown",
         extra_args={
             "temperature": 0.0,  # Determinismo
-            "max_tokens": 800    # Límite para controlar el coste
+            "max_tokens": 1600,  # Límite para controlar el coste
         }
     )
 
